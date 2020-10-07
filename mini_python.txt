@@ -1,0 +1,58 @@
+%% summary
+
+The following grammar describes a subset of the Python programming language with
+support for
+
+- Variables
+- Binary operations
+- Functions
+
+Significant whitespace, as required by the Python language spec, is not
+considered here.
+
+Of course, feel free to extend this as you like. Later on in the course, we will
+add more constructs.
+
+%% extensions
+
+Grammar extensions:
+
+    - <T>* means 0 or more of <T>
+    - <T>+ means 1 or more of <T>
+    - "T"  means T literally
+    - (<T> | <U> | <V>) means one of <T>, <U>, or <V>
+
+%% grammar
+
+<program> -> <stmt>*
+
+<stmt> -> <function> | <expr>
+
+<function> -> "def" <id> ":" <function_body>
+
+<function_body> -> "pass" | <stmt>+ | <stmt>* return <expr>
+
+<expr> -> <id> | <number> | <string> | <expr> <binary_op> <expr>
+
+<binary_op> -> "="
+             | "+" | "-" | "*" | "/" | "//" | "%"
+             | "+=" | "-=" | "*=" | "/=" | "//=" | "%="
+             | "^" | "&" | "|"
+             | "||" | "&&"
+             | "<<" | ">>"
+
+<id> -> ("_" | <letter>) ("_" | <letter> | <digit>)*
+
+<letter> -> "a" | ... | "z" | "A" | ... | "Z"
+
+<number> -> <int> | <float>
+
+<string> -> "'" <char>* "'" | """ <char>* """
+
+<int> -> <digit>+
+
+<float> -> <digit>+ "." <digit>*
+
+<digit> -> "0" | ... | "9"
+
+<char> -> an arbitrary character

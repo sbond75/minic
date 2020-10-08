@@ -1,40 +1,40 @@
-program : <top_level_stmt>*
+program : <top_level_stmt>* ;
 
-top_level_stmt : <decl> | <function>
+top_level_stmt : <decl> | <function> ;
 
-decl : <type> <id> ";" | <type> <id> "=" <expr> ";"
+decl : ( <type> <id> ";" ) | ( <type> <id> "=" <expr> ";" ) ;
 
-function : <type> <id> "(" <param>* ")" <block>
+function : <type> <id> "(" <param>* ")" <block> ;
 
-type : "char" | "int" | "long" | "float" | "double" | <type>"*"
+type : "char" | "int" | "long" | "float" | "double" | ( <type> "*" ) ;
 
-id : ("_" | <letter>) ("_" | <letter> | <digit>)*
+id : ("_" | <letter>) ("_" | <letter> | <digit>)* ;
 
-block : "{" <stmt>* "}"
+block : "{" <stmt>* "}" ;
 
-stmt : <block> | <decl> | <expr>";"
+stmt : <block> | <decl> | <expr> ";" ;
 
-expr : <id> | <number> | <char> | <string> | <expr> <binary_op> <expr>
+expr : <id> | <number> | <char> | <string> | <expr> <binary_op> <expr> ;
 
 binary_op : "="
              | "+" | "-" | "*" | "/" | "%"
              | "+=" | "-=" | "*=" | "/=" | "%="
              | "^" | "&" | "|"
              | "||" | "&&"
-             | "<<" | ">>"
+             | "<<" | ">>" ;
 
-letter : "a" | ... | "z" | "A" | ... | "Z"
+letter : / [a-zA-Z] / ;
 
-number : <int> | <float>
+number : <int> | <float> ;
 
-char : "'" <ch> "'"
+char : "'" <ch> "'" ;
 
-string : "\"" <ch>* "\""
+string : "\"" <ch>* "\"" ;
 
-int : <digit>+
+int : <digit>+ ;
 
-float : <digit>+ "." <digit>*
+float : <digit>+ "." <digit>* ;
 
-digit : "0" | ... | "9"
+digit : /[0-9]/ ;
 
-ch : /.+/
+ch : /.+/ ;

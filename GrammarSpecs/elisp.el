@@ -85,7 +85,7 @@ putting the matches in a buffer named *matching*"
   (beginning-of-buffer)
 
   (let ((orig "\\([a-z_]+\\) :")
-	(replacement "mpc_parser_t* \\1 = mpc_new(\"\\1\");"))
+	(replacement "  mpc_parser_t* \\1 = mpc_new(\"\\1\");"))
 
     ;; Replace everything with what we want:
     (my-regex-replace orig "\\1")
@@ -119,7 +119,7 @@ putting the matches in a buffer named *matching*"
 					     ((string-equal line "int") "int_")
 					     ((string-equal line "float") "float_")
 					     ('t line))
-			    do (insert (concat "mpc_parser_t* " item
+			    do (insert (concat "  mpc_parser_t* " item
 					       " = mpc_new(\"" line "\");\n"))
 			    collect item
 			    ;;(ignore-errors (forward-line))
@@ -146,9 +146,11 @@ putting the matches in a buffer named *matching*"
 	(goto-char (point-max))
 
 	;; (my-make-csv (mapcar (lambda (x) (concat x "_"))
-	(insert (concat "\n\nmpca_lang(MPCA_LANG_DEFAULT,
+	(insert (concat "\n\n  mpca_lang(MPCA_LANG_DEFAULT,
 	    grammar,
-	   " (my-make-csv (split-string entire-buffer "\n"))) ", NULL);;")
+	   " ;;(my-make-csv (reverse (split-string entire-buffer "\n")))
+			(my-make-csv-no-quotes (reverse lst))
+			) ", NULL);;")
 	
 
 	;; Save it
@@ -165,7 +167,7 @@ putting the matches in a buffer named *matching*"
 	    (goto-char (point-min))
 	    (search-forward "}\n\nint main() {") ;; Move point to after this
 	    (forward-line -2)
-	    (insert (concat "mpc_cleanup(" (number-to-string (length entire-buffer)) ", " (my-make-csv-no-quotes lst)) ");\n")
+	    (insert (concat "  mpc_cleanup(" (number-to-string (length lst)) ", " (my-make-csv-no-quotes (reverse lst))) ");\n")
 	    (pop-to-buffer (current-buffer))
 	    ))
 

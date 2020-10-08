@@ -1,12 +1,13 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // Based on code from https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c
 bool withContents(const char* filename, void (*processContents)(char*)) {
   char * buffer = 0;
   long length;
-  FILE * f = fopen (filename, "rb");
+  FILE * f = fopen (filename, "r");
 
   if (f)
     {

@@ -2,7 +2,7 @@ program : <top_level_stmt>* ;
 
 top_level_stmt : <decl> | <function> ;
 
-decl : ( <type> <id> ) | ( <type> <id> "=" <expr> ) ;
+decl : ( <type> <id> "=" <expr> ) | ( <type> <id> ) ";" ;
 
 function : <type> <id> "(" <param>* ")" <block> ;
 
@@ -14,7 +14,9 @@ block : "{" <stmt>* "}" ;
 
 stmt : <block> | <decl> | <expr> ";" ;
 
-expr : <id> | <number> | <char> | <string> | <expr> <binary_op> <expr>;
+expr : <expr_val> (<binary_op> <expr>)*;
+
+expr_val : <id> | <number> | <char> | <string> ;
 
 binary_op : "="
              | "+" | "-" | "*" | "/" | "%"

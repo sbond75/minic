@@ -9,6 +9,7 @@ void run(FILE* grammarFile) {
   mpc_parser_t* block = mpc_new("block");
   mpc_parser_t* stmt = mpc_new("stmt");
   mpc_parser_t* expr = mpc_new("expr");
+  mpc_parser_t* expr_val = mpc_new("expr_val");
   mpc_parser_t* binary_op = mpc_new("binary_op");
   mpc_parser_t* letter = mpc_new("letter");
   mpc_parser_t* number = mpc_new("number");
@@ -22,7 +23,7 @@ void run(FILE* grammarFile) {
 
   mpc_err_t* err = mpca_lang_file(MPCA_LANG_DEFAULT,
 	    grammarFile,
-	   ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl, NULL);
+				  ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, NULL);
   if (err != NULL) {
         // Error:
         mpc_err_print(err);
@@ -34,19 +35,25 @@ void run(FILE* grammarFile) {
 	    grammar,
 	    "ch", "digit", "float", "int", "string", "char", "number", "letter", "binary_op", "expr", "stmt", "block", "id", "type", "function", "decl", "top_level_stmt", "program", NULL); */
   
-  const char* input = "int a = 1";
-
   mpc_result_t r;
 
-  if (mpc_parse("input", input, decl, &r)) {
-    mpc_ast_print(r.output);
-    mpc_ast_delete(r.output);
-  } else {
-    mpc_err_print(r.error);
-    mpc_err_delete(r.error);
+  const char* fname = "example.txt";
+  FILE* sourceFile = fopen(fname, "r");
+  if (sourceFile) {
+    if (mpc_parse_file(fname, sourceFile, decl, &r)) {
+      mpc_ast_print(r.output);
+      mpc_ast_delete(r.output);
+    } else {
+      mpc_err_print(r.error);
+      mpc_err_delete(r.error);
+    }
+    fclose(sourceFile);
+  }
+  else {
+    perror("Failed to read example.txt");
   }
   
-  //  mpc_cleanup(18, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl);
+  //  mpc_cleanup(19, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl);
 }
 
 int main() {

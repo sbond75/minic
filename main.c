@@ -1,9 +1,7 @@
 #include "mpc.h"
 #include "utils.h"
 
-void run(char* grammar) {
-  mpc_parser_t* program = mpc_new("program");
-  mpc_parser_t* top_level_stmt = mpc_new("top_level_stmt");
+void run(FILE* grammarFile) {
   mpc_parser_t* decl = mpc_new("decl");
   mpc_parser_t* function = mpc_new("function");
   mpc_parser_t* type = mpc_new("type");
@@ -22,9 +20,9 @@ void run(char* grammar) {
   mpc_parser_t* ch = mpc_new("ch");
 
 
-  mpc_err_t* err = mpca_lang(MPCA_LANG_DEFAULT,
-	    grammar,
-	   ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl, top_level_stmt, program, NULL);
+  mpc_err_t* err = mpca_lang_file(MPCA_LANG_DEFAULT,
+	    grammarFile,
+	   ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl, NULL);
   if (err != NULL) {
         // Error:
         mpc_err_print(err);
@@ -36,11 +34,11 @@ void run(char* grammar) {
 	    grammar,
 	    "ch", "digit", "float", "int", "string", "char", "number", "letter", "binary_op", "expr", "stmt", "block", "id", "type", "function", "decl", "top_level_stmt", "program", NULL); */
   
-  const char* input = "int thing = (4 * 2 * 11 + 2) - 5;";
+  const char* input = "int _ = 1 + 2";
 
   mpc_result_t r;
 
-  if (mpc_parse("input", input, program, &r)) {
+  if (mpc_parse("input", input, decl, &r)) {
     mpc_ast_print(r.output);
     mpc_ast_delete(r.output);
   } else {
@@ -48,11 +46,11 @@ void run(char* grammar) {
     mpc_err_delete(r.error);
   }
   
-  mpc_cleanup(18, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl, top_level_stmt, program);
+  mpc_cleanup(18, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl);
 }
 
 int main() {
-  if (!withContents("grammar.txt", run)) {
+  if (!withFile("grammar.txt", run)) {
     perror("Failed to read grammar.txt");
     return 1;
   }

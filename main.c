@@ -34,7 +34,7 @@ void run(FILE* grammarFile) {
 	    grammar,
 	    "ch", "digit", "float", "int", "string", "char", "number", "letter", "binary_op", "expr", "stmt", "block", "id", "type", "function", "decl", "top_level_stmt", "program", NULL); */
   
-  const char* input = "int _ = 1 + 2";
+  const char* input = "int a = 1";
 
   mpc_result_t r;
 
@@ -46,7 +46,7 @@ void run(FILE* grammarFile) {
     mpc_err_delete(r.error);
   }
   
-  mpc_cleanup(18, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl);
+  //  mpc_cleanup(18, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, stmt, block, id, type, function, decl);
 }
 
 int main() {

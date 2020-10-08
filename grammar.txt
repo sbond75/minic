@@ -14,7 +14,7 @@ block : "{" <stmt>* "}" ;
 
 stmt : <block> | <decl> | <expr> ";" ;
 
-expr : ( <expr> <binary_op> <expr> ) | <id> | <number> | <char> | <string> ;
+expr : <id> | <number> | <char> | <string> | <expr> <binary_op> <expr>;
 
 binary_op : "="
              | "+" | "-" | "*" | "/" | "%"
@@ -23,7 +23,7 @@ binary_op : "="
              | "||" | "&&"
              | "<<" | ">>" ;
 
-letter : / [a-zA-Z] / ;
+letter : /[a-zA-Z]/ ;
 
 number : <int> | <float> ;
 

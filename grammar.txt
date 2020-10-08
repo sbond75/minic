@@ -1,0 +1,40 @@
+program : <top_level_stmt>*
+
+top_level_stmt : <decl> | <function>
+
+decl : <type> <id> ";" | <type> <id> "=" <expr> ";"
+
+function : <type> <id> "(" <param>* ")" <block>
+
+type : "char" | "int" | "long" | "float" | "double" | <type>"*"
+
+id : ("_" | <letter>) ("_" | <letter> | <digit>)*
+
+block : "{" <stmt>* "}"
+
+stmt : <block> | <decl> | <expr>";"
+
+expr : <id> | <number> | <char> | <string> | <expr> <binary_op> <expr>
+
+binary_op : "="
+             | "+" | "-" | "*" | "/" | "%"
+             | "+=" | "-=" | "*=" | "/=" | "%="
+             | "^" | "&" | "|"
+             | "||" | "&&"
+             | "<<" | ">>"
+
+letter : "a" | ... | "z" | "A" | ... | "Z"
+
+number : <int> | <float>
+
+char : "'" <ch> "'"
+
+string : "\"" <ch>* "\""
+
+int : <digit>+
+
+float : <digit>+ "." <digit>*
+
+digit : "0" | ... | "9"
+
+ch : /.+/

@@ -54,6 +54,9 @@ putting the matches in a buffer named *matching*"
 (defun my-make-csv (seq)
   (mapconcat (lambda (e) (format "\"%s\"" e)) seq ", "))
 
+(defun my-make-csv-no-quotes (seq)
+  (mapconcat (lambda (e) (format "%s" e)) seq ", "))
+
 ;; ;;
 
 
@@ -89,7 +92,8 @@ putting the matches in a buffer named *matching*"
 
     ;; Copy the whole file to get lines containing each match, in a string:
     (let ((all "\\(^.*$\\)")
-	  (entire-buffer (my-get-entire-buffer-string)))
+	  (entire-buffer (my-get-entire-buffer-string))
+	  )
       ;; Trim newline
       (goto-char (point-max))
       (backward-delete-char 1)
@@ -104,40 +108,70 @@ putting the matches in a buffer named *matching*"
 
       ;; Create multiple results using the entire-buffer string:
       ;;(erase-buffer) ;; Clear the current buffer
-      (my-regex-replace all "mpc_parser_t* \\1 = mpc_new(\"\\1\");")
-      ;;(save-excursion (insert entire-buffer)) ;; Insert new text and restore point to where we were
-      ;;(save-excursion
-      ;; Replace stuff here:
-      ;; Get all matches
-      ;; (let ((items (my-matches-in-buffer "^.*$"))) ;; Gets a list of all items to make
-      ;; 	(insert (concat " mpca_lang(MPCA_LANG_DEFAULT,
-      ;; 	    grammar,
-      ;; 	   " (my-make-csv items) ", NULL);")))
-      ;;)
 
-      ;; (string-match "^.*$" entire-buffer)
-      ;; (message (match-string 0))
+      ;;(my-regex-replace all "mpc_parser_t* \\1_ = mpc_new(\"\\1\");")
+      (let ((lst (save-excursion
+		   (goto-char (point-min))
+		   (cl-loop for line in (split-string entire-buffer "\n")
+			    ;; ... process line here ...
+			    do (kill-whole-line)
+			    for item = (cond ((string-equal line "char") "char_")
+					     ((string-equal line "int") "int_")
+					     ((string-equal line "float") "float_")
+					     ('t line))
+			    do (insert (concat "mpc_parser_t* " item
+					       " = mpc_new(\"" line "\");\n"))
+			    collect item
+			    ;;(ignore-errors (forward-line))
+			    ))))
+
+	;;(save-excursion (insert entire-buffer)) ;; Insert new text and restore point to where we were
+	;;(save-excursion
+	;; Replace stuff here:
+	;; Get all matches
+	;; (let ((items (my-matches-in-buffer "^.*$"))) ;; Gets a list of all items to make
+	;; 	(insert (concat " mpca_lang(MPCA_LANG_DEFAULT,
+	;; 	    grammar,
+	;; 	   " (my-make-csv items) ", NULL);")))
+	;;)
+
+	;; (string-match "^.*$" entire-buffer)
+	;; (message (match-string 0))
 
 
-      ;; (dolist (line (split-string entire-buffer "\n")) 
-      ;; 	;; ... process line here ...
-      ;; )
+	;; (dolist (line (split-string entire-buffer "\n")) 
+	;; 	;; ... process line here ...
+	;; )
 
-      (goto-char (point-max))
-      
-      (insert (concat "\n\nmpca_lang(MPCA_LANG_DEFAULT,
+	(goto-char (point-max))
+
+	;; (my-make-csv (mapcar (lambda (x) (concat x "_"))
+	(insert (concat "\n\nmpca_lang(MPCA_LANG_DEFAULT,
 	    grammar,
-	   " (my-make-csv (split-string entire-buffer "\n")) ", NULL);"))
-      )    
+	   " (my-make-csv (split-string entire-buffer "\n"))) ", NULL);;")
+	
 
-    ;; Save it
-    (let ((contents (my-get-entire-buffer-string)))
-      (with-current-buffer (get-file-buffer (file-truename "main.c"))
-	(goto-char (point-min))
-	(search-forward "void run(char* grammar) {\n") ;; Move point to after this
-	(insert contents)
-	(pop-to-buffer (current-buffer))
-	))
+	;; Save it
+	(let ((contents (my-get-entire-buffer-string)))
+	  (with-current-buffer (get-file-buffer (file-truename "main.c"))
+	    (goto-char (point-min))
+	    (search-forward "void run(char* grammar) {\n") ;; Move point to after this
+	    (insert contents)
+	    (pop-to-buffer (current-buffer))
+	    ))
+
+	(let ((contents (my-get-entire-buffer-string)))
+	  (with-current-buffer (get-file-buffer (file-truename "main.c"))
+	    (goto-char (point-min))
+	    (search-forward "}\n\nint main() {") ;; Move point to after this
+	    (forward-line -2)
+	    (insert (concat "mpc_cleanup(" (number-to-string (length entire-buffer)) ", " (my-make-csv-no-quotes lst)) ");\n")
+	    (pop-to-buffer (current-buffer))
+	    ))
+
+	)
+      )
+    
     ;;(write-region nil nil "
     
     ;;   (query-replace-regexp #("\\([a-z_]+\\) :" 0 6 (face font-lock-comment-face) 6 7 (face font-lock-comment-face) 7 13 (face font-lock-comment-face)) "mpc_parser_t* \\1 = mpc_new(\"\\1\");" nil nil nil nil nil) ;; Replace results in the new buffer.

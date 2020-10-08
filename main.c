@@ -2,6 +2,8 @@
 #include "utils.h"
 
 void run(FILE* grammarFile) {
+  mpc_parser_t* program = mpc_new("program");
+  mpc_parser_t* top_level_stmt = mpc_new("top_level_stmt");
   mpc_parser_t* decl = mpc_new("decl");
   mpc_parser_t* function = mpc_new("function");
   mpc_parser_t* type = mpc_new("type");
@@ -22,8 +24,7 @@ void run(FILE* grammarFile) {
 
 
   mpc_err_t* err = mpca_lang_file(MPCA_LANG_DEFAULT,
-	    grammarFile,
-				  ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, NULL);
+				  grammarFile, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, top_level_stmt, program, NULL);
   if (err != NULL) {
         // Error:
         mpc_err_print(err);
@@ -40,7 +41,7 @@ void run(FILE* grammarFile) {
   const char* fname = "example.txt";
   FILE* sourceFile = fopen(fname, "r");
   if (sourceFile) {
-    if (mpc_parse_file(fname, sourceFile, decl, &r)) {
+    if (mpc_parse_file(fname, sourceFile, program, &r)) {
       mpc_ast_print(r.output);
       mpc_ast_delete(r.output);
     } else {
@@ -53,7 +54,7 @@ void run(FILE* grammarFile) {
     perror("Failed to read example.txt");
   }
   
-  //  mpc_cleanup(19, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl);
+  mpc_cleanup(19, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, top_level_stmt, program);
 }
 
 int main() {

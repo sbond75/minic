@@ -6,6 +6,7 @@ void run(FILE* grammarFile) {
   mpc_parser_t* top_level_stmt = mpc_new("top_level_stmt");
   mpc_parser_t* decl = mpc_new("decl");
   mpc_parser_t* function = mpc_new("function");
+  mpc_parser_t* param = mpc_new("param");
   mpc_parser_t* type = mpc_new("type");
   mpc_parser_t* id = mpc_new("id");
   mpc_parser_t* block = mpc_new("block");
@@ -24,7 +25,7 @@ void run(FILE* grammarFile) {
 
 
   mpc_err_t* err = mpca_lang_file(MPCA_LANG_DEFAULT,
-				  grammarFile, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, top_level_stmt, program, NULL);
+				  grammarFile, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, param, function, decl, top_level_stmt, program, NULL);
   if (err != NULL) {
         // Error:
         mpc_err_print(err);
@@ -54,7 +55,7 @@ void run(FILE* grammarFile) {
     perror("Failed to read example.txt");
   }
   
-  mpc_cleanup(19, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, function, decl, top_level_stmt, program);
+  mpc_cleanup(20, ch, digit, float_, int_, string, char_, number, letter, binary_op, expr, expr_val, stmt, block, id, type, param, function, decl, top_level_stmt, program);
 }
 
 int main() {

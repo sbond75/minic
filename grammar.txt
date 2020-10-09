@@ -6,13 +6,15 @@ decl : (( <type> <id> "=" <expr> ) | ( <type> <id> )) ";" ;
 
 function : <type> <id> "(" <param>* ")" <block> ;
 
+param : <decl> ;
+
 type : "char" | "int" | "long" | "float" | "double" | ( <type> "*" ) ;
 
 id : ("_" | <letter>) ("_" | <letter> | <digit>)* ;
 
 block : "{" <stmt>* "}" ;
 
-stmt : <block> | <decl> | <expr> ";" ;
+stmt : ( <block> | <decl> | <expr> ) ";" ;
 
 expr : <expr_val> (<binary_op> <expr>)*;
 

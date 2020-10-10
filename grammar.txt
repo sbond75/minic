@@ -1,8 +1,11 @@
-program : <top_level_stmt>* ;
+program : (<top_level_stmt> | <newline> )* ;
 
 top_level_stmt : <decl> | <function> ;
 
 decl : (( <type> <id> "=" <expr> ) | ( <type> <id> )) ";" ;
+
+newline : /[;
+]/ ;
 
 function : <type> <id> "(" <param>* ")" <block> ;
 
@@ -12,9 +15,9 @@ type : "char" | "int" | "long" | "float" | "double" | ( <type> "*" ) ;
 
 id : ("_" | <letter>) ("_" | <letter> | <digit>)* ;
 
-block : "{" <stmt>* "}" ;
+block : "{" <newline>* ( <stmt> | <newline> )* "}" ;
 
-stmt : ( <block> | <decl> | <expr> ) ";" ;
+stmt : ( <block> | <decl> | <expr> ) ;
 
 expr : <expr_val> (<binary_op> <expr>)*;
 

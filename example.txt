@@ -1,5 +1,5 @@
 int a() {
-    int c = 3
+    int c = 3 + 5;
 }
 
 int a = 1 + 2

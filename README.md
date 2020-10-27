@@ -5,7 +5,7 @@ Work-in-progress C compiler inspired by [this](https://github.com/ayazhafiz/ccc/
 
 ## Building
 
-Run `nix-shell` and then `make` to build. 
+Run `mkdir obj`, then `nix-shell`, and then `make` to build. 
 
 ### Notes
 - `nix-shell` requires [Nix](https://nixos.org/download.html) to build with [LLVM](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html); if needed, you can change the Makefile to avoid requiring LLVM for testing purposes.
